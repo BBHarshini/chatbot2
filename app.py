@@ -2,6 +2,11 @@ from transformers import pipeline
 import pandas as pd
 import streamlit as st
 
+import subprocess
+
+subprocess.run(["pip", "install", "transformers==4.38.2"])
+
+
 tqa = pipeline(task="table-question-answering", model="google/tapas-base-finetuned-wtq")
 
 # Load the dataset
