@@ -1,0 +1,5 @@
+torch-scatter -f https://pytorch-geometric.com/whl/torch-1.8.0+cu101.html
+transformer
+streamlit
+pandas
+tensorflow
