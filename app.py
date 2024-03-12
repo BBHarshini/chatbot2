@@ -2,23 +2,10 @@ from transformers import pipeline
 import pandas as pd
 import streamlit as st
 
-import subprocess
-
-subprocess.run(["pip", "install", "transformers==4.38.2"])
-
-
+# Set up TAPAS model pipeline
 tqa = pipeline(task="table-question-answering", model="google/tapas-base-finetuned-wtq")
 
-# Load the dataset
-dataset = pd.read_csv("Conversation.csv")
-
-# Assuming the dataset has 'question' and 'answer' columns
-table = pd.DataFrame({'Question': dataset['question'], 'Answer': dataset['answer']})
-
-table = table.astype(str)
-table = table.fillna('')
-
-# Assuming you have a DataFrame named 'df' with your dataset
+# Sample data
 data = {
     'index': [0, 1, 2, 3, 4],
     'Unnamed: 0': [0, 1, 2, 3, 4],
@@ -28,18 +15,35 @@ data = {
                "i've been great. what about you?", "i've been good. i'm in school right now."]
 }
 
+# Create DataFrame
 df = pd.DataFrame(data)
 
-while True:
+# Function for TAPAS model logic
+def tqa(table, query):
+    # Replace this with your TAPAS model logic
+    return {"answer": table['answer'].values[0]}
+
+# Streamlit app
+def main():
+    st.title("TAPAS Model QA App")
+    st.write("Ask a question and get an answer!")
+
     # Get user input for the question
     question = st.text_input("Ask a question (type 'exit' to quit): ")
 
     # Check if the user wants to exit
     if question.lower() == 'exit':
-        break
+        st.stop()
 
-    # Generate the answer using TAPAS
-    answer = tqa(table=table, query=question)["answer"]
+    # Find the corresponding row in the DataFrame
+    row = df[df['question'] == question]
 
-    # Print the result
-    st.write(f"Question: {question}\nAnswer: {answer}\n")
+    # If the question is found in the dataset, generate the answer
+    if not row.empty:
+        answer = tqa(table=row, query=question)["answer"]
+        st.write(f"Question: {question}\nAnswer: {answer}\n")
+    else:
+        st.write(f"Hello, have a good day.\n")
+
+if __name__ == "__main__":
+    main()
